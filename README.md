@@ -14,8 +14,30 @@
 ## 💻 Cài đặt trò chơi
 
 1. Truy cập vào thư mục `Game` của dự án.
-2. Tải tệp `FarmBattle.zip` và giải nén.
-3. Mở thư mục vừa giải nén và chạy file **FarmBattle.exe** để bắt đầu chơi.
+2. Tải file `FarmBattle.zip` và giải nén.
+3. Mở thư mục vừa giải nén và chạy **FarmBattle.exe** để bắt đầu chơi.
 
-✅ Hoặc, bạn có thể chơi trực tiếp mà không cần tải về tại:  
+✅ Hoặc chơi trực tiếp không cần tải về tại:  
 🔗 [https://maiihu.itch.io/farmbattle](https://maiihu.itch.io/farmbattle)
+
+---
+
+## 👨‍💻 Phân chia công việc
+
+| Thành viên | Nhiệm vụ |
+|------------|----------|
+| **Phạm Tiến Dũng** | Thiết kế bản đồ, xây dựng cơ chế chơi |
+| **Nguyễn Mạnh Hùng** | Phát triển gameplay chính, tạo bot, hiệu ứng và âm thanh |
+| **Mai Đức Vinh** | Nâng cấp hệ thống AI cho bot, thực hiện báo cáo |
+
+---
+
+## 📌 Ghi chú
+
+- Game chỉ hỗ trợ hệ điều hành **Windows**.
+- Đảm bảo máy tính **bật âm thanh** để trải nghiệm hiệu ứng tốt nhất.
+- Nếu game không khởi động, hãy thử **chạy dưới quyền Administrator**.
+
+---
+
+Chúc bạn chơi game vui vẻ! 🎉
