@@ -87,13 +87,9 @@ public class Mouse : ItemBase
         Vector3 direction = _plantPos - transform.position;
 
         if (direction.x > 0.01f)
-        {
             transform.localScale = new Vector3(1, 1, 1); 
-        }
         else if (direction.x < -0.01f)
-        {
             transform.localScale = new Vector3(-1, 1, 1); 
-        }
     }
     
     private void FindAllPlantsCanEat()
@@ -103,7 +99,8 @@ public class Mouse : ItemBase
             if (child.childCount > 0)
             {
                 Transform plant = child.GetChild(0);
-                _plants.Add(plant.position, plant.GetComponent<Plant>());
+                if(_plants.ContainsKey(plant.position))
+                    _plants.Add(plant.position, plant.GetComponent<Plant>());
             }
         }
     }
