@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 5d2cf70739f913a42b888762fac104f8
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - shop1: {instanceID: 0}
+  - shopItemTemplate: {instanceID: 0}
+  - itemEffectManager: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
