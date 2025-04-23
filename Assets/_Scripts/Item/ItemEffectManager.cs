@@ -228,6 +228,7 @@ public class ItemEffectManager : MonoBehaviour
         float speed = 18f;
         List<Vector3> plantsDestroyed1 = new List<Vector3>();
         List<Vector3> plantsDestroyed2 = new List<Vector3>();
+        
         foreach (Transform child in tileMap1.transform)
             plantsDestroyed1.Add(child.position);
         foreach (Transform child in tileMap2.transform)

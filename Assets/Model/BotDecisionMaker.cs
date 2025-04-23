@@ -10,24 +10,24 @@ public class BotDecisionMaker : MonoBehaviour
     [SerializeField] private Transform map1;
     [SerializeField] private Transform map2;
     
-    private Model runtimeModel;
-    private IWorker worker;
+    private Model _runtimeModel;
+    private IWorker _worker;
 
-    public float time;
-    public float botMoney;
-    public float botPlanted;
-    public float botReady;
-    public int botGrowthTime;
-    public float opponentPlanted;
-    public float opponentReady;
-    public int opponentGrowthTime;
+    private float _time;
+    private float _botPlanted;
+    private float _botReady;
+    private int _botGrowthTime;
+    private float _botMoney;
+    private float _opponentPlanted;
+    private float _opponentReady;
+    private int _opponentGrowthTime;
 
-    private readonly string[] actions = { "Mưa", "Sấm sét", "Bảo vệ", "Chuột", "Sóng thần", "Không mua" };
-    private readonly float[] actionCosts = { 30f, 15f, 30f, 30f, 40f, 0f }; // Chi phí của các hành động
+    private readonly string[] _actions = { "Mưa", "Sấm sét", "Bảo vệ", "Chuột", "Sóng thần", "Không mua" };
+    private readonly float[] _actionCosts = { 30f, 15f, 30f, 30f, 40f, 0f }; 
 
-    private const float MAX_PLOTS = 12 * 12;
-    private const float MAX_TIME = 180f;
-    private const float MAX_GROWTH_TIME = 60f;
+    private const float MaxPlots = 12 * 12;
+    private const float MaxTime = 180f;
+    private const float MaxGrowthTime = 60f;
 
     public static BotDecisionMaker Instance;
 
@@ -43,15 +43,15 @@ public class BotDecisionMaker : MonoBehaviour
     {
         try
         {
-            runtimeModel = ModelLoader.Load(modelAsset);
-            if (runtimeModel == null)
+            _runtimeModel = ModelLoader.Load(modelAsset);
+            if (_runtimeModel == null)
             {
                 Debug.LogError("Failed to load ONNX model.");
                 return;
             }
 
-            worker = WorkerFactory.CreateWorker(WorkerFactory.Type.ComputePrecompiled, runtimeModel);
-            if (worker == null)
+            _worker = WorkerFactory.CreateWorker(WorkerFactory.Type.ComputePrecompiled, _runtimeModel);
+            if (_worker == null)
             {
                 Debug.LogError("Failed to create worker.");
                 return;
@@ -67,35 +67,22 @@ public class BotDecisionMaker : MonoBehaviour
 
     public string MakeDecision()
     {
-        if (worker == null)
+        if (_worker == null)
         {
             Debug.LogWarning("Worker not initialized. Cannot make decision.");
             return "Không mua";
         }
 
-        // Chuẩn hóa input theo đúng Python
-        float[] normFactors = new float[]
+        float[] normFactors = 
         {
-            MAX_TIME,
-            100f, // lưu ý: chỉ chia 100 chứ không clamp botMoney
-            MAX_PLOTS,
-            MAX_PLOTS,
-            MAX_GROWTH_TIME,
-            MAX_PLOTS,
-            MAX_PLOTS,
-            MAX_GROWTH_TIME
+            MaxTime, 100f, MaxPlots, MaxPlots,
+            MaxGrowthTime, MaxPlots, MaxPlots, MaxGrowthTime
         };
 
-        float[] rawInput = new float[]
+        float[] rawInput = 
         {
-            time,
-            botMoney,
-            botPlanted,
-            botReady,
-            botGrowthTime,
-            opponentPlanted,
-            opponentReady,
-            opponentGrowthTime
+            _time, _botMoney, _botPlanted, _botReady, _botGrowthTime, 
+            _opponentPlanted, _opponentReady, _opponentGrowthTime
         };
 
         float[] inputData = new float[8];
@@ -108,8 +95,8 @@ public class BotDecisionMaker : MonoBehaviour
 
         try
         {
-            worker.Execute(inputTensor);
-            Tensor outputTensor = worker.PeekOutput();
+            _worker.Execute(inputTensor);
+            Tensor outputTensor = _worker.PeekOutput();
             float[] outputData = outputTensor.ToReadOnlyArray();
 
             // Chọn hành động có giá trị logits lớn nhất
@@ -125,12 +112,12 @@ public class BotDecisionMaker : MonoBehaviour
                 }
             }
 
-            string predictedAction = actions[maxIndex];
+            string predictedAction = _actions[maxIndex];
 
             // Kiểm tra lại điều kiện tiền
             float recoveredBotMoney = inputData[1] * 100f; // khôi phục giá trị botMoney thực tế
 
-            if (recoveredBotMoney < actionCosts[maxIndex])
+            if (recoveredBotMoney < _actionCosts[maxIndex])
             {
                 predictedAction = "Không mua";
             }
@@ -147,13 +134,13 @@ public class BotDecisionMaker : MonoBehaviour
     
     public int UseItemWithModel()
     {
-        time = (int)Time.time;
-        botPlanted = 0f;
-        botReady = 0f;
-        opponentPlanted = 0f;
-        opponentReady = 0f;
+        _time = (int)Time.time;
+        _botPlanted = 0f;
+        _botReady = 0f;
+        _opponentPlanted = 0f;
+        _opponentReady = 0f;
 
-        botMoney = BotController.Instance.score;
+        _botMoney = BotController.Instance.score;
         int botTimeGrow = 0, playerTimeGrow = 0;
 
         foreach (Transform child in map2)
@@ -161,10 +148,10 @@ public class BotDecisionMaker : MonoBehaviour
             if (child.childCount > 0)
             {
                 var plant = child.GetComponentInChildren<Plant>();
-                botPlanted++;
+                _botPlanted++;
                 botTimeGrow += plant.growTimer;
                 if (plant.isReadyToHarvest)
-                    botReady++;
+                    _botReady++;
             }
         }
 
@@ -173,15 +160,15 @@ public class BotDecisionMaker : MonoBehaviour
             if (child.childCount > 0)
             {
                 var plant = child.GetComponentInChildren<Plant>();
-                opponentPlanted++;
+                _opponentPlanted++;
                 playerTimeGrow += plant.growTimer;
                 if (plant.isReadyToHarvest)
-                    opponentReady++;
+                    _opponentReady++;
             }
         }
 
-        botGrowthTime = botPlanted > 0 ? Mathf.RoundToInt((botTimeGrow / botPlanted) * 5) : 0;
-        opponentGrowthTime = opponentPlanted > 0 ? Mathf.RoundToInt((playerTimeGrow / opponentPlanted) * 5) : 0;
+        _botGrowthTime = _botPlanted > 0 ? Mathf.RoundToInt((botTimeGrow / _botPlanted) * 5) : 0;
+        _opponentGrowthTime = _opponentPlanted > 0 ? Mathf.RoundToInt((playerTimeGrow / _opponentPlanted) * 5) : 0;
 
         string action = MakeDecision();
         Debug.Log($"Bot decided: {action}");
@@ -204,7 +191,7 @@ public class BotDecisionMaker : MonoBehaviour
 
     void OnDestroy()
     {
-        worker?.Dispose();
+        _worker?.Dispose();
         Debug.Log("BotDecisionMaker destroyed.");
     }
 }
