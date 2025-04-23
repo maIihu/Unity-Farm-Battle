@@ -28,7 +28,7 @@
 |------------|----------|
 | **Phạm Tiến Dũng** | Thiết kế bản đồ, xây dựng cơ chế chơi |
 | **Nguyễn Mạnh Hùng** | Phát triển hệ thống trò chơi chính, tạo máy, hiệu ứng và âm thanh |
-| **Mai Đức Vinh** | Nâng cấp hệ thống AI cho máy, thực hiện báo cáo |
+| **Mai Đức Vinh** | Xây dựng và nâng cấp hệ thống AI cho máy, thực hiện báo cáo |
 
 ---
 
